@@ -1,25 +1,32 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="container">
-    <h1>Daftar User</h1>
-    <a href="{{ route('users.create') }}" class="btn btn-primary">Tambah User</a>
-    <table class="table mt-3">
-        <tr><th>Nama</th><th>Email</th><th>Membership</th><th>Aksi</th></tr>
-        @foreach($users as $user)
-        <tr>
-            <td>{{ $user->name }}</td>
-            <td>{{ $user->email }}</td>
-            <td>{{ $user->membership->type }}</td>
-            <td>
-                <a href="{{ route('users.edit',$user->id) }}" class="btn btn-warning">Edit</a>
-                <form action="{{ route('users.destroy',$user->id) }}" method="POST" style="display:inline;">
-                    @csrf @method('DELETE')
-                    <button class="btn btn-danger">Hapus</button>
-                </form>
-            </td>
-        </tr>
-        @endforeach
+<div class="container mx-auto mt-6">
+    <h1 class="text-2xl font-bold mb-4">Daftar User</h1>
+    <table class="table-auto w-full border-collapse border border-gray-300 shadow-lg">
+        <thead class="bg-gray-100">
+            <tr>
+                <th class="border px-4 py-2">ID</th>
+                <th class="border px-4 py-2">Nama</th>
+                <th class="border px-4 py-2">Email</th>
+                <th class="border px-4 py-2">Membership</th>
+                <th class="border px-4 py-2">Created At</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach($users as $user)
+            <tr class="hover:bg-gray-50">
+                <td class="border px-4 py-2">{{ $user->id }}</td>
+                <td class="border px-4 py-2 font-semibold">{{ $user->name }}</td>
+                <td class="border px-4 py-2">{{ $user->email }}</td>
+                <td class="border px-4 py-2">
+                    {{ $user->membership->type ?? '-' }} 
+                    ({{ $user->membership->discount ?? 0 }}%)
+                </td>
+                <td class="border px-4 py-2">{{ $user->created_at->format('d M Y H:i') }}</td>
+            </tr>
+            @endforeach
+        </tbody>
     </table>
 </div>
 @endsection

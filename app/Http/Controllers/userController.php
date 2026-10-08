@@ -11,10 +11,11 @@ class userController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
-    {
-        return user::with('membership')->get();
-    }
+    public function index() {
+    $users = user::with('membership')->get();
+    return view('users.indexUser', compact('users'));
+}
+
 
     /**
      * Show the form for creating a new resource.

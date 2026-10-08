@@ -10,10 +10,11 @@ class computerController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
-    {
-        return Computer::all();
-    }
+   public function index() {
+    $computers = Computer::all();
+    return view('computer.indexComputer', compact('computers'));
+}
+
 
     /**
      * Show the form for creating a new resource.
