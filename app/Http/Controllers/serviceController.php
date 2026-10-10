@@ -35,18 +35,26 @@ class serviceController extends Controller
         return Service::with('orders')->findOrFail($id);
     }
 
-    public function edit(string $id)
+    public function edit($id)
     {
-        $s = Service::findOrFail($id);
-        return view('services.edit', compact('s'));
+        $service = Service::findOrFail($id);
+        return view('services.editService', compact('service'));
     }
 
-    public function update(Request $req, string $id)
+    public function update(Request $request, $id)
     {
-        $s = Service::findOrFail($id);
-        $s->update($req->all());
-        return redirect()->route('services.index');
+        $request->validate([
+            'name'  => 'required|string|max:255',
+            'price' => 'required|numeric|min:0',
+        ]);
+
+        $service = Service::findOrFail($id);
+        $service->update($request->only(['name','price']));
+
+        return redirect()->route('services.index')
+                        ->with('success','Service berhasil diperbarui.');
     }
+
 
     public function destroy(string $id)
     {

@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use app\Models\transaction;
-use app\Models\user;
+use App\Models\transaction;
+use App\Models\user;
 use Illuminate\Http\Request;
 
 class transactionController extends Controller
@@ -13,7 +13,8 @@ class transactionController extends Controller
      */
     public function index()
     {
-        return Transaction::with('user')->get();
+        $transactions = Transaction::with(['user','order'])->get();
+        return view('transactions.indexTransaction', compact('transactions'));
     }
 
     /**
@@ -59,8 +60,11 @@ class transactionController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy($id)
     {
-       Transaction::destroy($id); return redirect()->route('transactions.index');
+        $transaction = Transaction::findOrFail($id);
+        $transaction->delete();
+
+        return redirect()->route('transactions.index')->with('success','Transaksi berhasil dihapus.');
     }
 }

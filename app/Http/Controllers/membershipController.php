@@ -47,18 +47,26 @@ class membershipController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
-    {
-        $m = Membership::findOrFail($id); return view('memberships.edit', compact('m'));
-    }
+    public function edit($id)
+{
+    $membership = Membership::findOrFail($id);
+    return view('memberships.editMembership', compact('membership'));
+}
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $req, string $id)
-    {
-        $m = Membership::findOrFail($id); $m->update($req->all()); return redirect()->route('memberships.index');
-    }
+public function update(Request $request, $id)
+{
+    $request->validate([
+        'type'     => 'required|string|max:255',
+        'discount' => 'required|numeric|min:0|max:100',
+    ]);
+
+    $membership = Membership::findOrFail($id);
+    $membership->update($request->only(['type','discount']));
+
+    return redirect()->route('memberships.index')
+                     ->with('success','Membership berhasil diperbarui.');
+}
+
 
     /**
      * Remove the specified resource from storage.

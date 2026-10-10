@@ -56,34 +56,32 @@ class userController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function edit($id)
     {
         $user = User::findOrFail($id);
         $memberships = Membership::all();
-        return view('users.edit', compact('user','memberships'));
+        return view('users.editUser', compact('user','memberships'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
+    public function update(Request $request, $id)
     {
-        $user = User::findOrFail($id);
-
-        $validated = $request->validate([
-            'name' => 'required',
-            'email' => 'required|unique:users,email,'.$id,
-            'membership_id' => 'required'
+        $request->validate([
+            'name'  => 'required|string|max:255',
+            'email' => 'required|email|unique:users,email,'.$id,
+            'password' => 'nullable|string|min:6',
+            'membership_id' => 'nullable|exists:memberships,id',
         ]);
 
+        $user = User::findOrFail($id);
+        $data = $request->only(['name','email','membership_id']);
         if ($request->filled('password')) {
-            $validated['password'] = bcrypt($request->password);
+            $data['password'] = bcrypt($request->password);
         }
+        $user->update($data);
 
-        $user->update($validated);
-
-        return redirect()->route('users.index')->with('success', 'User berhasil diupdate');
+        return redirect()->route('users.index')->with('success','User berhasil diperbarui.');
     }
+
 
     /**
      * Remove the specified resource from storage.

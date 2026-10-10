@@ -55,31 +55,28 @@ class shiftController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function edit($id)
     {
         $shift = Shift::findOrFail($id);
         $employees = Employee::all();
-        return view('shifts.edit', compact('shift','employees'));
+        return view('shifts.editShift', compact('shift','employees'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
+    public function update(Request $request, $id)
     {
-         $shift = Shift::findOrFail($id);
-
-        $validated = $request->validate([
+        $request->validate([
             'employee_id' => 'required|exists:employees,id',
             'shift_date'  => 'required|date',
             'start_time'  => 'required',
-            'end_time'    => 'required'
+            'end_time'    => 'required',
         ]);
 
-        $shift->update($validated);
+        $shift = Shift::findOrFail($id);
+        $shift->update($request->only(['employee_id','shift_date','start_time','end_time']));
 
-        return redirect()->route('shifts.index')->with('success', 'Shift berhasil diupdate');
+        return redirect()->route('shifts.index')->with('success','Shift berhasil diperbarui.');
     }
+
 
     /**
      * Remove the specified resource from storage.

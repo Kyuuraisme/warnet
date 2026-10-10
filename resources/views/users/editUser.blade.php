@@ -1,19 +1,28 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="container">
-    <h1>Edit User</h1>
-    <form action="{{ route('users.update',$user->id) }}" method="POST">
-        @csrf @method('PUT')
-        <input type="text" name="name" value="{{ $user->name }}" class="form-control mb-2">
-        <input type="email" name="email" value="{{ $user->email }}" class="form-control mb-2">
-        <input type="password" name="password" placeholder="Password baru (opsional)" class="form-control mb-2">
-        <select name="membership_id" class="form-select mb-2">
-            @foreach($memberships as $m)
-                <option value="{{ $m->id }}" @if($user->membership_id==$m->id) selected @endif>{{ $m->type }}</option>
-            @endforeach
-        </select>
-        <button class="btn btn-primary">Update</button>
+<div class="container mx-auto mt-6">
+    <h1 class="text-2xl font-bold mb-4">Edit User</h1>
+
+    <form action="{{ route('users.update', $user->id) }}" method="POST" class="space-y-4">
+        @csrf
+        @method('PUT')
+
+
+        <!-- Password (opsional) -->
+        <div>
+            <label class="block font-semibold mb-2">Password Baru</label>
+            <input type="password" name="password" class="w-full border px-3 py-2 rounded">
+        </div>
+
+
+        <!-- Tombol Simpan -->
+        <div>
+            <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
+                Update User
+            </button>
+            <a href="{{ route('users.index') }}" class="ml-2 text-gray-600 hover:underline">Batal</a>
+        </div>
     </form>
 </div>
 @endsection

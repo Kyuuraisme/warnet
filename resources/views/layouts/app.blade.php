@@ -18,6 +18,7 @@
             <li><a href="/memberships" class="hover:text-yellow-300">Member</a></li>
             <li><a href="/services" class="hover:text-yellow-300">Pricelist</a></li>
             <li><a href="/employees" class="hover:text-yellow-300">Karyawan</a></li>
+            <li><a href="/transactions" class="hover:text-yellow-300">Daftar Transaksi</a></li>
         </ul>
     </nav>
 

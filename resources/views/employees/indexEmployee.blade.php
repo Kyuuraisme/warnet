@@ -23,7 +23,21 @@
                 <td class="border px-4 py-2">{{ $employee->name }}</td>
                 <td class="border px-4 py-2">{{ $employee->position }}</td>
                 <td class="border px-4 py-2">{{ $employee->phone }}</td>
-                <td class="border px-4 py-2">...</td>
+                <td class="border px-4 py-2">
+                    <a href="{{ route('employees.edit', $employee->id) }}" 
+                       class="bg-yellow-500 text-white px-2 py-1 rounded hover:bg-yellow-600">
+                        Edit
+                    </a>
+                    <form action="{{ route('employees.destroy', $employee->id) }}" 
+                          method="POST" style="display:inline;">
+                        @csrf
+                        @method('DELETE')
+                        <button class="bg-red-600 text-white px-2 py-1 rounded hover:bg-red-700"
+                                onclick="return confirm('Yakin hapus karyawan ini?')">
+                            Hapus
+                        </button>
+                    </form>
+                </td>
             </tr>
             @endforeach
         </tbody>

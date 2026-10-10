@@ -50,16 +50,28 @@ class computerController extends Controller
      */
     public function edit(string $id)
     {
-        $c = Computer::findOrFail($id); return view('computers.edit', compact('c'));
+        $computer = Computer::findOrFail($id); 
+        return view('computers.editComputer', compact('computer'));
     }
+
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $req, string $id)
+    public function update(Request $request, $id)
     {
-        $c = Computer::findOrFail($id); $c->update($req->all()); return redirect()->route('computers.index');
+        $request->validate([
+            'code'        => 'required|string|max:10',
+            'specs'       => 'required|string|max:255',
+            'is_available'=> 'required|boolean',
+        ]);
+
+        $computer = Computer::findOrFail($id);
+        $computer->update($request->all());
+
+        return redirect()->route('computers.index')->with('success', 'Komputer berhasil diperbarui.');
     }
+
 
     /**
      * Remove the specified resource from storage.
