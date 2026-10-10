@@ -12,8 +12,10 @@ class employeeController extends Controller
      */
     public function index()
     {
-        return Employee::with('shifts')->get();
+        $employees = Employee::all();
+        return view('employees.indexEmployee', compact('employees'));
     }
+
 
     /**
      * Show the form for creating a new resource.

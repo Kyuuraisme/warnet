@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\user;
-use app\Models\membership;
+use App\Models\membership;
 
 class userController extends Controller
 {
@@ -12,9 +12,9 @@ class userController extends Controller
      * Display a listing of the resource.
      */
     public function index() {
-    $users = user::with('membership')->get();
-    return view('users.indexUser', compact('users'));
-}
+        $users = user::with('membership')->get();
+        return view('users.indexUser', compact('users'));
+    }
 
 
     /**
@@ -22,7 +22,7 @@ class userController extends Controller
      */
     public function create()
     {
-        $memberships = Membership::all();
+        $memberships = membership::all();
         return view('users.create', compact('memberships'));
     }
 

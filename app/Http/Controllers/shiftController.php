@@ -13,7 +13,8 @@ class shiftController extends Controller
      */
     public function index()
     {
-        return Shift::with('employee')->get();
+        $shifts = Shift::with('employee')->get();
+        return view('shifts.indexShift', compact('shifts'));
     }
 
     /**
@@ -22,25 +23,26 @@ class shiftController extends Controller
     public function create()
     {
         $employees = Employee::all();
-        return view('shifts.create', compact('employees'));
+        return view('shifts.createShift', compact('employees'));
     }
+
 
     /**
      * Store a newly created resource in storage.
      */
     public function store(Request $req)
     {
-        $validated = $req->validate([
-            'employee_id' => 'required|exists:employees,id',
-            'shift_date'  => 'required|date',
-            'start_time'  => 'required',
-            'end_time'    => 'required'
+        Shift::create([
+            'employee_id' => $req->employee_id,
+            'shift_date'  => $req->shift_date,
+            'start_time'  => $req->start_time,
+            'end_time'    => $req->end_time,
         ]);
 
-        Shift::create($validated);
-
-        return redirect()->route('shifts.index')->with('success', 'Shift berhasil ditambahkan');
+        return redirect()->route('shifts.index')
+                        ->with('success', 'Shift berhasil ditambahkan.');
     }
+
 
     /**
      * Display the specified resource.

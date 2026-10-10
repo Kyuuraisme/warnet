@@ -12,7 +12,8 @@ class membershipController extends Controller
      */
     public function index()
     {
-        return Membership::all();
+        $memberships = Membership::all();   // ambil semua data membership
+        return view('memberships.indexMemberhip', compact('memberships'));
     }
 
     /**
@@ -20,16 +21,20 @@ class membershipController extends Controller
      */
     public function create()
     {
-        return view('memberships.create');
+        return view('memberships.createMembership');
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $req)
     {
-        Membership::create($req->all()); return redirect()->route('memberships.index');
+        Membership::create([
+            'type'     => $req->type,
+            'discount' => $req->discount,
+        ]);
+
+        return redirect()->route('memberships.index')
+                        ->with('success', 'Membership berhasil ditambahkan.');
     }
+
 
     /**
      * Display the specified resource.

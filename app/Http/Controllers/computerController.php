@@ -10,10 +10,11 @@ class computerController extends Controller
     /**
      * Display a listing of the resource.
      */
-   public function index() {
-    $computers = Computer::all();
-    return view('computer.indexComputer', compact('computers'));
-}
+    public function index()
+    {
+        $computers = Computer::all();   // ambil semua data komputer
+        return view('computers.indexComputer', compact('computers'));
+    }
 
 
     /**
@@ -21,16 +22,20 @@ class computerController extends Controller
      */
     public function create()
     {
-        return view('computers.create');
+        return view('computers.createComputer');
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $req)
     {
-        Computer::create($req->all()); return redirect()->route('computers.index');
+        Computer::create([
+            'code'        => $req->code,
+            'specs'       => $req->specs,
+            'is_available'=> $req->is_available,
+        ]);
+
+        return redirect()->route('computers.index')->with('success', 'Komputer berhasil ditambahkan.');
     }
+
 
     /**
      * Display the specified resource.

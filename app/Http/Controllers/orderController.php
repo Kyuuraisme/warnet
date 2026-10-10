@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\order;
 use App\Models\user;
 use App\Models\service;
+use App\Models\transaction;
 use Illuminate\Http\Request;
 
 class orderController extends Controller
@@ -14,24 +15,58 @@ class orderController extends Controller
      */
     public function index()
     {
-        return Order::with('user','service')->get(); 
+        $users = User::all();  
+        $services = Service::all();
+        return view('orders.indexOrder', compact('users','services'));
     }
+
+
 
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
+    public function create(User $users)
     {
-        $users = User::all(); $services = Service::all(); return view('orders.create', compact('users','services'));
+        if ($users->membership && $users->membership->type === 'Reguler') {
+            $services = Service::where('is_member_only', 0)->get();
+        } else {
+            $services = Service::where('is_member_only', 1)->get();
+        }
+
+        return view('orders.indexOrder', compact('users','services'));
     }
+
+
 
     /**
      * Store a newly created resource in storage.
      */
     public function store(Request $req)
     {
-        Order::create($req->all()); return redirect()->route('orders.index');
+        $service = Service::findOrFail($req->service_id);
+        $quantity = $req->quantity ?? 1; // default 1 kalau tidak ada input
+        $totalPrice = $service->price * $quantity;
+
+        // Simpan order
+        $order = Order::create([
+            'user_id'     => $req->user_id,
+            'service_id'  => $req->service_id,
+            'quantity'    => $quantity,
+            'total_price' => $totalPrice,
+        ]);
+
+        // Simpan transaksi otomatis
+        Transaction::create([
+            'user_id'  => $req->user_id,
+            'order_id' => $order->id,
+            'amount'   => $totalPrice,
+            'payment_method' => $req->payment_method, // atau sesuai kebutuhan
+            'transaction_date' => now(),
+        ]);
+
+        return redirect()->route('orders.index')->with('success', 'Billing & transaksi berhasil disimpan.');
     }
+
 
     /**
      * Display the specified resource.

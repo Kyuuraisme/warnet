@@ -2,64 +2,55 @@
 
 namespace App\Http\Controllers;
 
-use app\Models\service;
+use App\Models\Service;   // huruf besar S
 use Illuminate\Http\Request;
 
 class serviceController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
-        return Service::all();
+        $services = Service::all();   // ambil semua data service
+        return view('services.indexService', compact('services'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create()
     {
-        return view('services.create');
+        return view('services.createService');
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $req)
     {
-        Service::create($req->all()); return redirect()->route('services.index');
+        Service::create([
+            'name'  => $req->name,
+            'price' => $req->price,
+        ]);
+
+        return redirect()->route('services.index')
+                        ->with('success', 'Service berhasil ditambahkan.');
     }
 
-    /**
-     * Display the specified resource.
-     */
+
     public function show(string $id)
     {
         return Service::with('orders')->findOrFail($id);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
     public function edit(string $id)
     {
-        $s = Service::findOrFail($id); return view('services.edit', compact('s'));
+        $s = Service::findOrFail($id);
+        return view('services.edit', compact('s'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(Request $req, string $id)
     {
-        $s = Service::findOrFail($id); $s->update($req->all()); return redirect()->route('services.index');
+        $s = Service::findOrFail($id);
+        $s->update($req->all());
+        return redirect()->route('services.index');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(string $id)
     {
-        Service::destroy($id); return redirect()->route('services.index');
+        Service::destroy($id);
+        return redirect()->route('services.index');
     }
 }
